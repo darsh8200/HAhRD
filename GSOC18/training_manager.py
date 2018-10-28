@@ -5,7 +5,7 @@ import numpy as np
 default_dataset_directory='GeometryUtilities-master/interpolation/image_data/'
 
 #importing the model to be used for training
-from models.model1_definition import model6 as model_function_handle
+from models.model1_definition import model6_V2 as model_function_handle
 from models.model1_definition import calculate_model_accuracy
 from models.model1_definition import calculate_total_loss
 
@@ -16,7 +16,7 @@ from inference_multi_gpu import infer
 from get_saliency_map import get_gradient
 
 ###################### RUN CONFIGURATION #####################
-run_number=60
+run_number=62
 #the regex pattern for the dataset filename
 train_filename_pattern='pu/train/*'
 test_filename_pattern='pu/valid/*'
@@ -61,7 +61,7 @@ if __name__=='__main__':
     '''
     if opt.mode=='train':
         #Specifying the Hyperparameters
-        init_learning_rate=0.001
+        init_learning_rate=0.01
         decay_step=100
         decay_rate=0.95
         #Specifying the run configuration
@@ -164,7 +164,7 @@ if __name__=='__main__':
         plot_histogram(predictions,labels)
 
         #plotting the test set prediction histograms
-        filename='tmp/hgcal/{}/results/results_mode_test_pu.npz'.format(run_number)
+        filename='tmp/hgcal/{}/results/results_mode_valid.npz'.format(run_number)
         test_results=load_data(filename)
         predictions=test_results['predictions']
         labels=test_results['labels']
@@ -184,7 +184,7 @@ if __name__=='__main__':
         https://github.com/tensorflow/tensorflow/issues/4897
         '''
         mini_batch_size=1
-        filename='test_pu'
+        filename='pu_valid'
         #Calulating the gradient
         get_gradient(run_number,
                     model_function_handle,
@@ -201,15 +201,16 @@ if __name__=='__main__':
         from Visualization_Module.saliency_map_visualization import create_layerwise_saliency_map_matplot
         #Now visualizing the gradient
         #Loading the gradient data
-        filename='tmp/hgcal/{}/results/saliency_map_arrays.npz'.format(run_number)
+        filename='tmp/hgcal/{}/results/saliency_map_arrays_pu_train.npz'.format(run_number)
         map_data=load_data(filename)
         plot_example=0
-        gradient=np.squeeze(map_data['gradient'])[plot_example,:,:,:]
+        #print map_data['gradient']
+        gradient=np.squeeze(map_data['gradient'])#[plot_example,:,:,:]
         input=map_data['input'][plot_example,:,:,:]
         pred=map_data['pred'][plot_example,:]
         label=map_data['label'][plot_example,:]
         #creating the visualization
-        create_layerwise_saliency_map_matplot(input,gradient*input)
+        create_layerwise_saliency_map_matplot(input,gradient)
 
         #Creating the saliency map
         print gradient.shape,input.shape
