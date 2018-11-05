@@ -922,17 +922,17 @@ def model6_V2(X,is_training):
                         apply_batchnorm=bn_decision,
                         weight_decay=lambd,
                         apply_relu=True)#it is default no need to write
-    A1Mp=max_pooling3d(A1,
-                        name='mpool1',
-                        filter_shape=(3,3,1),
-                        stride=(2,2,1),
-                        padding_type='VALID')
+    # A1Mp=max_pooling3d(A1,
+    #                     name='mpool1',
+    #                     filter_shape=(3,3,1),
+    #                     stride=(2,2,1),
+    #                     padding_type='VALID')
 
     #Defining the second layer
-    A2=rectified_conv3d(A1Mp,
+    A2=rectified_conv3d(A1,
                         name='conv3d2',
-                        filter_shape=(5,5,1),
-                        output_channel=256,
+                        filter_shape=(3,3,1),
+                        output_channel=128,
                         stride=(1,1,1),
                         padding_type='SAME',
                         is_training=is_training,
@@ -940,35 +940,35 @@ def model6_V2(X,is_training):
                         apply_batchnorm=bn_decision,
                         weight_decay=lambd,
                         apply_relu=True)#it is default no need to write
-    A2Mp=max_pooling3d(A2,
-                        name='mpool2',
-                        filter_shape=(3,3,1),
-                        stride=(2,2,1),
-                        padding_type='VALID')
+    # A2Mp=max_pooling3d(A2,
+    #                     name='mpool2',
+    #                     filter_shape=(3,3,1),
+    #                     stride=(2,2,1),
+    #                     padding_type='VALID')
 
     #Defining the thord layer
-    A3=rectified_conv3d(A2Mp,
+    A3=rectified_conv3d(A2,
                         name='conv3d3',
                         filter_shape=(3,3,1),
                         output_channel=256,
-                        stride=(1,1,1),
+                        stride=(2,2,1),
                         padding_type='SAME',
                         is_training=is_training,
                         dropout_rate=dropout_rate,
                         apply_batchnorm=bn_decision,
                         weight_decay=lambd,
                         apply_relu=True)#it is default no need to write
-    A3Mp=max_pooling3d(A3,
-                        name='mpool3',
-                        filter_shape=(3,3,1),
-                        stride=(2,2,1),
-                        padding_type='VALID')
+    # A3Mp=max_pooling3d(A3,
+    #                     name='mpool3',
+    #                     filter_shape=(3,3,1),
+    #                     stride=(2,2,1),
+    #                     padding_type='VALID')
 
     #Definign the fourth layer
-    A4=rectified_conv3d(A3Mp,
+    A4=rectified_conv3d(A3,
                         name='conv3d4',
                         filter_shape=(3,3,1),
-                        output_channel=384,
+                        output_channel=256,
                         stride=(1,1,1),
                         padding_type='SAME',
                         is_training=is_training,
@@ -981,8 +981,8 @@ def model6_V2(X,is_training):
     A5=rectified_conv3d(A4,
                         name='conv3d5',
                         filter_shape=(3,3,1),
-                        output_channel=384,
-                        stride=(1,1,1),
+                        output_channel=256,
+                        stride=(2,2,1),
                         padding_type='SAME',
                         is_training=is_training,
                         dropout_rate=dropout_rate,
@@ -995,7 +995,7 @@ def model6_V2(X,is_training):
                         name='conv3d6',
                         filter_shape=(3,3,1),
                         output_channel=384,
-                        stride=(1,1,1),
+                        stride=(2,2,1),
                         padding_type='SAME',
                         is_training=is_training,
                         dropout_rate=dropout_rate,
@@ -1008,21 +1008,21 @@ def model6_V2(X,is_training):
                         name='conv3d7',
                         filter_shape=(3,3,1),
                         output_channel=256,
-                        stride=(1,1,1),
+                        stride=(2,2,1),
                         padding_type='SAME',
                         is_training=is_training,
                         dropout_rate=dropout_rate,
                         apply_batchnorm=bn_decision,
                         weight_decay=lambd,
                         apply_relu=True)
-    A7Mp=max_pooling3d(A7,
-                        name='mpool3',
-                        filter_shape=(3,3,1),
-                        stride=(2,2,1),
-                        padding_type='VALID')
+    # A7Mp=max_pooling3d(A7,
+    #                     name='mpool3',
+    #                     filter_shape=(3,3,1),
+    #                     stride=(2,2,1),
+    #                     padding_type='VALID')
 
     #Now flattening and making fully connected layers
-    A8=simple_fully_connected(A7Mp,
+    A8=simple_fully_connected(A7,
                                 name='fc1',
                                 output_dim=1024,
                                 is_training=is_training,

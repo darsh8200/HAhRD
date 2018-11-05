@@ -16,7 +16,7 @@ from inference_multi_gpu import infer
 from get_saliency_map import get_gradient
 
 ###################### RUN CONFIGURATION #####################
-run_number=62
+run_number=63
 #the regex pattern for the dataset filename
 train_filename_pattern='pu/train/*'
 test_filename_pattern='pu/valid/*'
@@ -75,7 +75,7 @@ if __name__=='__main__':
                         summary=90,#save the summary every x minibatch
                         statistics=None,#leaks memory(so keep None,just use while code tests)
                         testing=1,#run validation set test ever x epoch
-                        checkpoint=1)#save the parameters every x epoch
+                        checkpoint=10)#save the parameters every x epoch
 
         #Finally running the training
         train(run_number,
