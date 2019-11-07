@@ -37,14 +37,13 @@ def get_variable_on_cpu(name,shape,initializer,weight_decay=None):
         #Applying the l2 regularization and multiplying with
         #the hyperparameter weight_decay: lambda
         reg_loss=tf.multiply(tf.nn.l2_loss(weight),weight_decay,
-                                name='lambd_hyparam')
-        #Adding the loss to the collection so that it could be
-        #Added to final loss
+                                name='lambda_hyparam')
+        #Adding the loss to the collection so that it could be added to final loss.
         tf.add_to_collection('all_losses',reg_loss)
 
     return weight
 
-################ Simple Feed Forwards Layer ###################
+################ Simple Feed Forward Layers ###################
 def simple_fully_connected(X,name,output_dim,is_training,dropout_rate=0.0,
                             apply_batchnorm=True,weight_decay=None,
                             flatten_first=False,apply_relu=True,
@@ -58,23 +57,23 @@ def simple_fully_connected(X,name,output_dim,is_training,dropout_rate=0.0,
     USAGE:
         INPUT:
             X           :the activation of previous layer/input layer
-            output_dim  :the dimenstion of the output layer
+            output_dim  :the dimension of the output layer
             name        :the name of the layer
             weight_decay:(lambda) if specified to a value, then it
                             will be used for implementing the L2-
                             regularization of the weights
             is_training : to be used to state the mode i.e training or
-                            inference mode.used for batch norm
+                            inference mode.used for batchnorm
             dropout_rate: the fraction of the activation which we will
                             dropout randomly to act as a regularizing effect.
                             a number between 0 an 1.
-            apply_batchnorm: whether to apply batch norm or not. A boolean
+            apply_batchnorm: whether to apply batchnorm or not. A boolean
                             True/False.
             weight_decay : an hyperparameter which will control the fraction
                             of L2- norm of weights to add in total loss.
                             Will act as regularization effect.
-            flatten_first: whether to first flattenthe input into a
-                            2 dimenional tensor as [batch_size,all_activation]
+            flatten_first: whether to first flatten the input into a
+                            2 dimensional tensor as [batch_size,all_activation]
             apply_relu  : whether to apply relu activation at last or not.
             initializer :initializer choice to be used for Weights
 
@@ -96,7 +95,7 @@ def simple_fully_connected(X,name,output_dim,is_training,dropout_rate=0.0,
         shape_b=(1,output_dim)
         W=get_variable_on_cpu('W',shape_W,initializer,weight_decay)
 
-        #Applying the linear transforamtion and passing through non-linearity
+        #Applying the linear transformation and passing through non-linearity
         Z=tf.matmul(X,W,name='linear_transform')
 
         #Applying batch norm
@@ -106,7 +105,7 @@ def simple_fully_connected(X,name,output_dim,is_training,dropout_rate=0.0,
                 Z_tilda=tf.layers.batch_normalization(Z,axis=axis,
                                                     training=is_training)
         else:
-            #We generally dont regularize the bias unit
+            #We generally don't regularize the bias unit
             bias_initializer=tf.zeros_initializer()
             b=get_variable_on_cpu('b',shape_b,bias_initializer)
             Z_tilda=tf.add(Z,b,name='bias_add')
@@ -130,7 +129,7 @@ def rectified_conv2d(X,name,filter_shape,output_channel,
     '''
     DESCRIPTION:
         This function will apply simple convolution to the given input
-        images filtering the input with requires number of filters.
+        images filtering the input with required number of filters.
         This will be a custom block to apply the whole rectified
         convolutional block which include the following sequence of operation.
         conv2d --> batch_norm(optional) --> activation(optional)
