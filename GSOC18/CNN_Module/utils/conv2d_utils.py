@@ -180,7 +180,7 @@ def rectified_conv2d(X,name,filter_shape,output_channel,
         #Now applying the convolution
         Z_conv=tf.nn.conv2d(X,filters,net_stride,padding_type,name='conv2d')
         if apply_batchnorm==True:
-            Z=_batch_normalization2d(Z_conv,is_training)
+            Z=batch_normalization2d(Z_conv,is_training)
         else:
             #Biases Weight creation
             net_bias_shape=(1,1,1,output_channel)
@@ -206,7 +206,7 @@ def max_pooling2d(X,name,filter_shape,stride,padding_type):
         This function will perform maxpooling on the input 'image'
         from the previous stage of convolutional layer.The parameters
         are similar to conv2d layer.
-        But there are no trainable papameters in this layer.
+        But there are no trainable parameters in this layer.
     USAGE:
         INPUT:
 
@@ -239,7 +239,7 @@ def _batch_normalization2d(Z,is_training,name='batchnorm'):
         like group norm etc.
 
         WARNING:
-            we have to run a separate update op to update the rolling
+            we have to run a separate update operation to update the rolling
             averages of moments. This has to be taken care during final
             model declaration.Else inference will not work correctly.
     USAGE:
@@ -249,7 +249,7 @@ def _batch_normalization2d(Z,is_training,name='batchnorm'):
                             mode or inference mode.(for rolling avgs of moments)
                             (a tf.bool type usually taken as placeholder)
         OUTPUT:
-            Z_tilda     : the batch-normailzed version of input
+            Z_tilda     : the batch-normalized version of input
     '''
     with tf.variable_scope(name):
         axis=3  #We will normalize the whole feature map across batch
@@ -263,10 +263,10 @@ def identity_residual_block(X,name,num_channels,mid_filter_shape,is_training,
                             initializer=tf.glorot_uniform_initializer()):
     '''
     DESCRIPTION:
-        This layer implements the one of the special case of residual
+        This layer implements one of the special case of residual
         layer, when the shortcut/skip connection is directly connected
         to main branch without any extra projection since dimension
-        (nH,nW) dont change in the main branch.
+        (nH,nW) don't change in the main branch.
         We will be using bottle-neck approach to reduce computational
         complexity as mentioned in the ResNet Paper.
 
@@ -344,14 +344,14 @@ def convolutional_residual_block(X,name,num_channels,
     DESCRIPTION:
         This block is similar to the previous identity block but the
         only difference is that the shape (height,width) of main branch i.e 2
-        is changed in the way, so we have to adust this shape in the
+        is changed in the way, so we have to adjust this shape in the
         skip-connection/shortcut branch also. So we will use convolution
-        in the shorcut branch to match the shape.
+        in the shortcut branch to match the shape.
     USAGE:
         INPUT:
             first_filter_stride : (sh,sw) stride to be used with first filter
 
-            Rest of the argument decription is same a identity block
+            Rest of the argument description is same as identity block
         OUTPUT:
             A   : the final output/feature map of this residual block
     '''
@@ -382,7 +382,7 @@ def convolutional_residual_block(X,name,num_channels,
                             initializer=initializer)
 
         #Again one-one convolution for upsampling
-        #Here last number of channels which need not match with input
+        #Here last number of channels which need not to match with input
         Z3=rectified_conv2d(A2,name='branch_2c',
                             filter_shape=(1,1),
                             output_channel=num_channels[2],
@@ -429,19 +429,19 @@ def inception_block(X,name,final_channel_list,compress_channel_list,
     DESCRIPTION:
         This block will enable us to have multiple filter's activation
         in the same layer. Multiple filters (here only 1x1,3x3,5x5 and
-        a maxpooling layer) will be aplied to the input image and the
-        ouptput of all these filters will be stacked in one layer.
+        a maxpooling layer) will be applied to the input image and the
+        output of all these filters will be stacked in one layer.
 
-        This is biologically inspired where we first extrct the feature
-        of multiple frequencey/filter and then combine it to furthur abstract
+        This is biologically inspired where we first extract the feature
+        of multiple frequency/filter and then combine it to further abstract
         the idea/image.
 
-        Filters larger than 5 not included as they will/could increase
+        Filters larger than 5 are not included as they will/could increase
         the computational complexity.
     USAGE:
         INPUT:
             X                   :the input image/tensor.
-            name                :the name to be given this whole block.will be used in
+            name                :the name to be given to this whole block will be used in
                                     visualization
             final_channel_list : the list of channels as output of these filter
                                     [# 1x1 channels,# 3x3 channels,
@@ -530,7 +530,7 @@ def inception_block(X,name,final_channel_list,compress_channel_list,
                           filter_shape=(3,3),
                           stride=(1,1),
                           padding_type='SAME')
-        #now comressing to reduce channels
+        #now compressing to reduce channels
         AMp=rectified_conv2d(CMp,
                             name='compress_maxpool',
                             filter_shape=(1,1),
@@ -544,7 +544,7 @@ def inception_block(X,name,final_channel_list,compress_channel_list,
                             apply_relu=True,
                             initializer=initializer)
 
-        #Now Concatenating the sub-channels of different filter type
+        #Now Concatenating the sub-channels of different filter types
         concat_list=[A1,A3,A5,AMp]
         axis=-1         #across the channel axis : axis=3
         A=tf.concat(concat_list,axis=axis,name='concat')
