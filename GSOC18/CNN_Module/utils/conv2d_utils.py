@@ -37,7 +37,7 @@ def get_variable_on_cpu(name,shape,initializer,weight_decay=None):
         #Applying the l2 regularization and multiplying with
         #the hyperparameter weight_decay: lambda
         reg_loss=tf.multiply(tf.nn.l2_loss(weight),weight_decay,
-                                name='lambda_hyparam')
+                                name='lambd_hyparam')
         #Adding the loss to the collection so that it could be added to final loss.
         tf.add_to_collection('all_losses',reg_loss)
 
