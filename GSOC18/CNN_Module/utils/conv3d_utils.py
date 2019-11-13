@@ -252,7 +252,7 @@ def convolutional3d_residual_block(X,name,num_channels,
     '''
     with tf.variable_scope(name):
         #Main Branch
-        #Applying the first one one convolution
+        #Applying the first one-one convolution
         A1=rectified_conv3d(X,name='branch_2a',
                             filter_shape=(1,1,1),
                             output_channel=num_channels[0],
@@ -274,7 +274,7 @@ def convolutional3d_residual_block(X,name,num_channels,
                             weight_decay=weight_decay,
                             initializer=initializer)
         #Again one-one convolution for decompressing/upsampling
-        #Here last number of channels which need not match with input
+        #Here last number of channels which should not match with the input
         #since we will match them while transforming the shortcut path
         Z3=rectified_conv3d(A2,name='branch_2c',
                             filter_shape=(1,1,1),
@@ -339,7 +339,7 @@ def inception3d_block(X,name,final_channel_list,compress_channel_list,
                                     convolution (which are computationally expensive)
                                     we need to compress them using 1x1x1 convolution.
                                     so list of such compress of form
-                                    [#compressed channel for 3x3x3,
+                                    [#compresses channel for 3x3x3,
                                      #compresses channel for 5x5x5]
         OUTPUT:
             A        : The final activation after concatenation of all these
@@ -459,8 +459,7 @@ def inception_global_filter_layer(X,name,
         Using this layer we will try to bring the inception like pattern with
         the global filters which we are using in model2 (in the depth dimension).
         Currently we will use usual spatial filter dimensions like
-        (3x3,5x5,...) but the depth dimension will probe the whole depth at
-        once with the global filters of sized equal to the depth.
+        (3x3,5x5,...) c.
     USAGE:
         X                   : the input to this layer
         name                : a unique name given to this layer for better
@@ -506,7 +505,7 @@ def inception_global_filter_layer(X,name,
 
         with tf.name_scope('second_global_filter'):
             #Now defining the computation of the second filter
-            #Creatign the appropriate padding for the spatial dimension
+            #Creating the appropriate padding for the spatial dimension
             fx,fy,_=second_filter_shape
             px=(fx-1)/2
             py=(fy-1)/2
